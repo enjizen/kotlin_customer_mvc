@@ -1,7 +1,6 @@
 package com.wanchalerm.tua.customer.exception
 
 import com.wanchalerm.tua.customer.constant.ResponseEnum
-import org.springframework.http.HttpStatus
 
 class UnauthorizedException (
     var code: String? = ResponseEnum.UNAUTHORIZED.code,

@@ -1,7 +1,6 @@
 package com.wanchalerm.tua.customer.exception
 
 import com.wanchalerm.tua.customer.constant.ResponseEnum
-import org.springframework.http.HttpStatus
 
 class DuplicateException(
     var code: String? = ResponseEnum.BAD_REQUEST.code,
