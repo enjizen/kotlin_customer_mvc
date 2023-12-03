@@ -9,13 +9,7 @@ enum class ResponseEnum(val code: String, val message: String, val description: 
     UNAUTHORIZED("401", ResponseStatusConstant.UNAUTHORIZED, ResponseStatusConstant.UNAUTHORIZED);
 
     companion object {
-        fun getByCode(code: String?): ResponseEnum {
-            for (responseEnum in entries) {
-                if (responseEnum.code == code) {
-                    return responseEnum
-                }
-            }
-            return UNKNOWN
-        }
+        fun getByCode(code: String?) =
+            entries.firstOrNull { responseEnum -> responseEnum.code == code } ?: UNKNOWN
     }
 }

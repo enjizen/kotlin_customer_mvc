@@ -50,6 +50,7 @@ class CustomerController(private val customerProfileService: CustomerProfileServ
     @PutMapping("/customers")
     fun update(@Valid @RequestBody request: CustomerRequest, @RequestParam("id") id: Int,
                @RequestParam("code") code: String): ResponseEntity<ResponseModel> {
+        logger.info("Update profile with id $id and code $code")
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(ResponseModel(ResponseEnum.SUCCESS, dataObj = customerProfileService.update(request, id, code)))
