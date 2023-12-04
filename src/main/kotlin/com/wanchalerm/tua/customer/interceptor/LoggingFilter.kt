@@ -101,20 +101,10 @@ class LoggingFilter(private val maskingConfig: MaskingConfig) : OncePerRequestFi
     }
 
 
-    private fun replaceFirst(input: String): String {
-        val firstPosition = maskingConfig.maskingSize ?: 4
-        return if (input.length >= firstPosition) {
-            "***${input.substring(firstPosition)}"
-        } else {
-            "***${input.substring(input.length)}"
-        }
-    }
-
-
     fun maskJsonValue(jsonString: String): String {
         return try {
             val jsonNode: JsonNode = objectMapper.readTree(jsonString)
-            maskingConfig.maskingKeys?.forEach { key -> traverseAndMask(jsonNode, key) }
+            maskingConfig.maskingKeys.forEach { key -> traverseAndMask(jsonNode, key) }
             objectMapper.writeValueAsString(jsonNode)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -136,6 +126,15 @@ class LoggingFilter(private val maskingConfig: MaskingConfig) : OncePerRequestFi
             }
         } else if (jsonNode.isArray) {
             jsonNode.elements().forEachRemaining { element -> traverseAndMask(element, keyToMask) }
+        }
+    }
+
+    private fun replaceFirst(input: String): String {
+        val firstPosition = maskingConfig.maskingSize ?: 4
+        return if (input.length >= firstPosition) {
+            "***${input.substring(firstPosition)}"
+        } else {
+            "***${input.substring(input.length)}"
         }
     }
 
