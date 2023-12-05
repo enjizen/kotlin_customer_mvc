@@ -4,8 +4,7 @@ import com.wanchalerm.tua.customer.exception.NoContentException
 import com.wanchalerm.tua.customer.model.entity.ProfileEntity
 import com.wanchalerm.tua.customer.model.request.CustomerRequest
 import com.wanchalerm.tua.customer.repository.CustomerProfileRepository
-import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.BeanUtils
@@ -41,14 +40,13 @@ class CustomerProfileService(private val customerProfileRepository: CustomerProf
         if (!profileEntity.isPresent) {
             throw NoContentException()
         }
+
         profileEntity.get().apply {
-            updatedDateTime = LocalDateTime.now()
             deleted = true
         }.run {
             customerProfileRepository.save(this)
         }
     }
-
 
     fun getAll(): List<ProfileEntity> {
         return customerProfileRepository.findAll()
