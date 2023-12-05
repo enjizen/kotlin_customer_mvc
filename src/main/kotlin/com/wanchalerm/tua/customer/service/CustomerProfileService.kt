@@ -48,7 +48,7 @@ class CustomerProfileService(private val customerProfileRepository: CustomerProf
         }
     }
 
-    fun getAll(): List<ProfileEntity> {
-        return customerProfileRepository.findAll()
+    fun getAll(): MutableList<ProfileEntity> {
+        return customerProfileRepository.findAllByDeletedFalse()
     }
 }
