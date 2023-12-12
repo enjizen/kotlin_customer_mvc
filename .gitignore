@@ -144,3 +144,7 @@ target/test-classes/META-INF/kotlin_customer_mvc.kotlin_module
 .idea/sonarlint/securityhotspotstore/9/0/909d30e98c4ae5b70120283e314bf12558327c8e
 .idea/sonarlint/securityhotspotstore/e/1/e1d253869f3d7c1e126fe8f10732cc89d92ac012
 .idea/sonarlint/securityhotspotstore/f/b/fb463aae4612f201ab8f33d4f86391a748e8a0bc
+target/classes/com/wanchalerm/tua/customer/aspect/LoggingAspect.class
+target/classes/com/wanchalerm/tua/customer/repository/ProfileRepository.class
+target/classes/com/wanchalerm/tua/customer/service/ProfileService.class
+target/classes/com/wanchalerm/tua/customer/service/ProfileServiceServiceImpl.class
