@@ -5,9 +5,7 @@ import jakarta.servlet.http.HttpServletRequest
 import java.io.IOException
 import org.springframework.web.util.ContentCachingRequestWrapper
 
-class RepeatableContentCachingRequestWrapper(request: HttpServletRequest?) : ContentCachingRequestWrapper(
-    request!!
-) {
+class RepeatableContentCachingRequestWrapper(request: HttpServletRequest?) : ContentCachingRequestWrapper(request!!) {
     private var inputStream: SimpleServletInputStream? = null
     override fun getInputStream(): ServletInputStream = this.inputStream!!
 

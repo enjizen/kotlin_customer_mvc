@@ -10,7 +10,6 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 import org.apache.commons.lang.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -51,16 +50,20 @@ class LoggingFilter(private val maskingConfig: MaskingConfig) : OncePerRequestFi
 
     @Throws(IOException::class)
     private fun logRequest(requestWrapper: RepeatableContentCachingRequestWrapper) {
-        val allHeaders = getAllHeaders(requestWrapper)
         val body = if (maskingConfig.enabled) {
             maskJsonValue(requestWrapper.readInputAndDuplicate())
         } else {
             requestWrapper.readInputAndDuplicate()
         }
+
+        val headers = getAllHeaders(requestWrapper)
+        val params = getAllParam(requestWrapper)
+
         val logRequest = """[REQUEST]
                 method=[${requestWrapper.method}]
                 path=[${requestWrapper.requestURI}]
-                headers=[${objectMapper.writeValueAsString(allHeaders)}]
+                ${if (params.isNotEmpty()) "param=[${objectMapper.writeValueAsString(params)}]" else ""}
+                headers=[${objectMapper.writeValueAsString(headers)}]
                 body=[$body]
             """.trimIndent()
         log.info(logRequest.split("\\s+".toRegex()).joinToString(" "))
@@ -74,7 +77,7 @@ class LoggingFilter(private val maskingConfig: MaskingConfig) : OncePerRequestFi
             String(responseWrapper.contentAsByteArray)
         }
         val logResponse = """[RESPONSE]
-                timeUsage=[${stopWatch.getTotalTime(TimeUnit.SECONDS)}]
+                timeUsage=[${stopWatch.totalTimeMillis}] ms
                 method=[$method]
                 path=[$uri]
                 status=[${responseWrapper.status}]
@@ -86,17 +89,19 @@ class LoggingFilter(private val maskingConfig: MaskingConfig) : OncePerRequestFi
 
     private fun getAllHeaders(request: RepeatableContentCachingRequestWrapper): Map<String, List<String>> {
         val headersMap = mutableMapOf<String, List<String>>()
-
-        // Get all header names
-        val headerNames = request.headerNames
-
-        while (headerNames.hasMoreElements()) {
-            val headerName = headerNames.nextElement()
+        request.headerNames.asSequence().forEach { headerName ->
             val headerValues = request.getHeaders(headerName).toList()
-
             headersMap[headerName] = headerValues
         }
+        return headersMap
+    }
 
+    private fun getAllParam(request: RepeatableContentCachingRequestWrapper): Map<String, List<String>> {
+        val headersMap = mutableMapOf<String, List<String>>()
+        request.parameterNames.asSequence().forEach { parameterName ->
+            val parameterValues = request.getParameterValues(parameterName).toList()
+            headersMap[parameterName] = parameterValues
+        }
         return headersMap
     }
 

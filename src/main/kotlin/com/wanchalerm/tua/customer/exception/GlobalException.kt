@@ -73,18 +73,20 @@ class GlobalException {
 
             ex.bindingResult.globalErrors.forEach { error ->
                 val errorDescription = if (error.defaultMessage == "null") FIELD_IS_MISSING else FIELD_IS_INVALID
-                error.objectName.camelToSnake().let {errorMap[it] = String.format(errorDescription, it) }
+                error.objectName.camelToSnake().let { errorMap[it] = String.format(errorDescription, it) }
             }
         }
 
-       (ex as? ConstraintViolationException)?.constraintViolations?.forEach { error ->
+        (ex as? ConstraintViolationException)?.constraintViolations?.forEach { error ->
             val errorDescription = if (null == error.invalidValue) FIELD_IS_MISSING else FIELD_IS_INVALID
             val paths = StringUtils.split(error.propertyPath.toString(), ".")
             val fieldNameSnakeCase: String = paths[paths.size - 1].camelToSnake()
             errorMap[fieldNameSnakeCase] = String.format(errorDescription, fieldNameSnakeCase)
         }
 
-        val responseStatus = ResponseStatus(ResponseEnum.BAD_REQUEST.code, ResponseEnum.BAD_REQUEST.message,  errorMap.firstEntry().value)
+        val responseStatus = ResponseStatus(ResponseEnum.BAD_REQUEST.code,
+                ResponseEnum.BAD_REQUEST.message,
+                errorMap.firstEntry().value)
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
             .body(ResponseModel(responseStatus = responseStatus))
@@ -94,26 +96,23 @@ class GlobalException {
     private fun getDescription(exception: Exception): String {
         return when {
             exception.cause is JsonMappingException && (exception.cause as JsonMappingException).cause is InputValidationException -> {
-                val cause = exception.cause as JsonMappingException
+                (exception.cause as JsonMappingException).let { cause ->
+                    String.format(FIELD_IS_INVALID, referencesToFields(cause.path))
+                }
+            }
+
+            exception.cause is InvalidFormatException -> (exception.cause as InvalidFormatException).let { cause ->
                 String.format(FIELD_IS_INVALID, referencesToFields(cause.path))
             }
 
-            exception.cause is InvalidFormatException -> {
-                val cause = exception.cause as InvalidFormatException
-                String.format(FIELD_IS_INVALID, referencesToFields(cause.path))
-            }
+            exception is MissingServletRequestParameterException -> String.format(
+                FIELD_IS_MISSING,
+                exception.parameterName
+            )
 
-            exception is MissingServletRequestParameterException -> {
-                String.format(FIELD_IS_MISSING, exception.parameterName)
-            }
+            exception is MissingPathVariableException -> String.format(FIELD_IS_MISSING, exception.variableName)
 
-            exception is MissingPathVariableException -> {
-                String.format(FIELD_IS_MISSING, exception.variableName)
-            }
-
-            exception is MethodArgumentTypeMismatchException -> {
-                String.format(FIELD_IS_INVALID, exception.name)
-            }
+            exception is MethodArgumentTypeMismatchException -> String.format(FIELD_IS_INVALID, exception.name)
 
             else -> DEFAULT_MESSAGE
         }
@@ -122,7 +121,7 @@ class GlobalException {
 
     private fun referencesToFields(references: List<JsonMappingException.Reference>): String {
         val sb = StringBuilder()
-        for (ref in references) {
+        references.forEach { ref ->
             if (ref.fieldName == null) {
                 sb.deleteCharAt(sb.length - 1)
                     .append("[")

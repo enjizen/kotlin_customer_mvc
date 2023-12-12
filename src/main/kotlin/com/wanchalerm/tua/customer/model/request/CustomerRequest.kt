@@ -11,22 +11,22 @@ import jakarta.validation.constraints.Size
 import java.time.LocalDate
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-class CustomerRequest {
-    @NotBlank
-    val firstName: String? = null
+class CustomerRequest (
+    @field:NotBlank
+    val firstName: String,
 
-    @NotBlank
-    val lastName: String? = null
+    @field:NotBlank
+    val lastName: String,
 
-    @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyy-MM-dd", timezone = "Asia/Bangkok")
-    val birthDate: LocalDate? = null
+    @field:NotNull
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyy-MM-dd", timezone = "Asia/Bangkok")
+    val birthDate: LocalDate,
 
-    @NotBlank
-    @Pattern(regexp = "^[0-9]+$")
-    @Size(min = 10, max = 10)
-    val mobileNumber: String? = null
+    @field:NotBlank
+    @field:Pattern(regexp = "^[0-9]+$")
+    @field:Size(min = 10, max = 10)
+    val mobileNumber: String,
 
-    @Email
-    val email: String? = null
-}
+    @field:Email
+    val email: String
+)

@@ -7,11 +7,7 @@ import java.io.IOException
 import java.io.InputStream
 
 class SimpleServletInputStream(data: ByteArray?) : ServletInputStream() {
-    private val delegate: InputStream
-
-    init {
-        delegate = ByteArrayInputStream(data)
-    }
+    private val delegate: InputStream = ByteArrayInputStream(data)
 
     override fun isFinished(): Boolean = false
 

@@ -20,15 +20,12 @@ class ResponseModel(
     var dataObj: Any? = null
 
     init {
-        if (responseStatus != null) {
-            this.status = responseStatus
-        } else {
-            this.status = ResponseStatus(
+        this.status = responseStatus
+            ?: ResponseStatus(
                 responseEnum?.code,
                 responseEnum?.message,
                 responseEnum?.description
             )
-        }
         this.dataObj = dataObj
     }
 }

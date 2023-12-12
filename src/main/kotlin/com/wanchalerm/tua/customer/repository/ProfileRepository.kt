@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-interface CustomerProfileRepository : CrudRepository<ProfileEntity, Int> {
+interface ProfileRepository : CrudRepository<ProfileEntity, Int> {
     fun findByIdAndCodeAndDeletedFalse(id: Int, code: String): ProfileEntity?
-    fun findAllByDeletedFalse(): MutableList<ProfileEntity>
+    fun findAllByDeletedFalse(): MutableList<ProfileEntity>?
 }
