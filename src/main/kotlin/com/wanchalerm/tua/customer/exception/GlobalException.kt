@@ -12,7 +12,7 @@ import com.wanchalerm.tua.customer.extension.camelToSnake
 import com.wanchalerm.tua.customer.model.response.ResponseModel
 import com.wanchalerm.tua.customer.model.response.ResponseStatus
 import jakarta.validation.ConstraintViolationException
-import java.util.*
+import java.util.TreeMap
 import org.apache.commons.lang.StringUtils
 import org.apache.http.entity.ContentType
 import org.slf4j.Logger
@@ -50,7 +50,7 @@ class GlobalException {
     fun handleJsonParseException(ex: Exception): ResponseEntity<ResponseModel> {
         logger.error("handleJsonParseException", ex)
         val description = getDescription(ex)
-        val responseStatus = ResponseStatus("400", BAD_REQUEST, description)
+        val responseStatus = ResponseStatus("400", BAD_REQUEST)
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
             .body(ResponseModel(responseStatus = responseStatus))
@@ -78,15 +78,14 @@ class GlobalException {
         }
 
         (ex as? ConstraintViolationException)?.constraintViolations?.forEach { error ->
-            val errorDescription = if (null == error.invalidValue) FIELD_IS_MISSING else FIELD_IS_INVALID
+            val errorDescription = if (error.invalidValue == null) FIELD_IS_MISSING else FIELD_IS_INVALID
             val paths = StringUtils.split(error.propertyPath.toString(), ".")
-            val fieldNameSnakeCase: String = paths[paths.size - 1].camelToSnake()
+            val fieldNameSnakeCase = paths[paths.size - 1].camelToSnake()
             errorMap[fieldNameSnakeCase] = String.format(errorDescription, fieldNameSnakeCase)
         }
 
         val responseStatus = ResponseStatus(ResponseEnum.BAD_REQUEST.code,
-                ResponseEnum.BAD_REQUEST.message,
-                errorMap.firstEntry().value)
+            errorMap.firstEntry().value ?: ResponseEnum.BAD_REQUEST.message)
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
             .body(ResponseModel(responseStatus = responseStatus))
@@ -138,26 +137,26 @@ class GlobalException {
     @ExceptionHandler(BusinessException::class)
     @ResponseBody
     fun handleBusinessException(ex: BusinessException): ResponseEntity<ResponseModel> {
-        logger.error(ex.message, ex)
+        logger.info(ex.toString())
         return ResponseEntity.status(ex.httpStatus)
             .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
-            .body(ResponseModel(responseStatus = ResponseStatus(ex.code, ex.message, ex.description)))
+            .body(ResponseModel(responseStatus = ResponseStatus(ex.code, ex.message)))
     }
 
     @ExceptionHandler(InputValidationException::class)
     @ResponseBody
     fun handleInputValidationException(ex: InputValidationException): ResponseEntity<ResponseModel> {
-        logger.error(ex.message, ex)
+        logger.info(ex.toString())
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
-            .body(ResponseModel(responseStatus = ResponseStatus(ex.code, ex.message, ex.description)))
+            .body(ResponseModel(responseStatus = ResponseStatus(ex.code, ex.message)))
     }
 
     @ExceptionHandler(NoContentException::class)
     @ResponseBody
     fun handleNoContentExceptionException(ex: NoContentException): ResponseEntity<ResponseModel> {
-        logger.error(ex.message, ex)
-        val responseModel = ResponseModel(responseStatus = ResponseStatus(ex.code, ex.message, ex.description))
+        logger.info(ex.toString())
+        val responseModel = ResponseModel(responseStatus = ResponseStatus(ex.code, ex.message))
         return ResponseEntity.status(HttpStatus.OK)
             .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
             .body(responseModel)
@@ -166,8 +165,8 @@ class GlobalException {
     @ExceptionHandler(UnauthorizedException::class)
     @ResponseBody
     fun handleUnauthorizedException(ex: UnauthorizedException): ResponseEntity<ResponseModel> {
-        logger.error(ex.message, ex)
-        val responseModel = ResponseModel(responseStatus = ResponseStatus(ex.code, ex.message, ex.description))
+        logger.info(ex.toString())
+        val responseModel = ResponseModel(responseStatus = ResponseStatus(ex.code, ex.message))
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
             .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
             .body(responseModel)
@@ -176,8 +175,8 @@ class GlobalException {
     @ExceptionHandler(DuplicateException::class)
     @ResponseBody
     fun handleDuplicateException(ex: DuplicateException): ResponseEntity<ResponseModel> {
-        logger.error(ex.message, ex)
-        val responseModel = ResponseModel(responseStatus = ResponseStatus(ex.code, ex.message, ex.description))
+        logger.info(ex.toString())
+        val responseModel = ResponseModel(responseStatus = ResponseStatus(ex.code, ex.message))
         return ResponseEntity.status(HttpStatus.CONFLICT)
             .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString())
             .body(responseModel)

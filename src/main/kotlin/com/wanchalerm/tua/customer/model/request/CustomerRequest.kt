@@ -3,6 +3,10 @@ package com.wanchalerm.tua.customer.model.request
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import com.wanchalerm.tua.customer.constant.DateFormatConstant.FORMAT_YYYY_MM_DD
+import com.wanchalerm.tua.customer.constant.DateFormatConstant.ZONE_ID_BANGKOK
+import com.wanchalerm.tua.customer.constant.RegexpConstant
+import com.wanchalerm.tua.customer.constant.RegexpConstant.NUMBER_FORMAT_ONLY
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
@@ -19,11 +23,11 @@ class CustomerRequest (
     val lastName: String,
 
     @field:NotNull
-    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyy-MM-dd", timezone = "Asia/Bangkok")
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = FORMAT_YYYY_MM_DD, timezone = ZONE_ID_BANGKOK)
     val birthDate: LocalDate,
 
     @field:NotBlank
-    @field:Pattern(regexp = "^[0-9]+$")
+    @field:Pattern(regexp = NUMBER_FORMAT_ONLY)
     @field:Size(min = 10, max = 10)
     val mobileNumber: String,
 

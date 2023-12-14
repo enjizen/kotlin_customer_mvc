@@ -24,13 +24,13 @@ class ProfileServiceServiceImpl(private val profileRepository: ProfileRepository
     }
 
     override fun update(customerRequest: CustomerRequest, id: Int, code: String): ProfileEntity {
-        val profileEntity = profileRepository.findByIdAndCodeAndDeletedFalse(id, code) ?: throw NoContentException()
+        val profileEntity = profileRepository.findByIdAndCodeAndDeletedFalse(id, code) ?: throw NoContentException(message = "Not found profile with id: $id and code: $code")
         BeanUtils.copyProperties(customerRequest, profileEntity)
         return profileRepository.save(profileEntity)
     }
 
     override fun delete(id: Int, code: String) {
-        val profileEntity = profileRepository.findByIdAndCodeAndDeletedFalse(id, code) ?: throw NoContentException()
+        val profileEntity = profileRepository.findByIdAndCodeAndDeletedFalse(id, code) ?: throw NoContentException("Not found profile with id: $id and code: $code")
         profileEntity.deleted = true
         profileRepository.save(profileEntity)
     }

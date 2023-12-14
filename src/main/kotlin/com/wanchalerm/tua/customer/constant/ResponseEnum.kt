@@ -1,15 +1,15 @@
 package com.wanchalerm.tua.customer.constant
 
-enum class ResponseEnum(val code: String, val message: String, val description: String) {
-    SUCCESS("200", ResponseStatusConstant.SUCCESS, ResponseStatusConstant.SUCCESS),
-    BAD_REQUEST("400", ResponseStatusConstant.BAD_REQUEST, ResponseStatusConstant.BAD_REQUEST),
-    NO_CONTENT("204", ResponseStatusConstant.NO_CONTENT, ResponseStatusConstant.NO_CONTENT),
-    CONFLICT("409", ResponseStatusConstant.CONFLICT, ResponseStatusConstant.CONFLICT),
-    UNKNOWN("400", ResponseStatusConstant.BAD_REQUEST, ResponseStatusConstant.BAD_REQUEST),
-    UNAUTHORIZED("401", ResponseStatusConstant.UNAUTHORIZED, ResponseStatusConstant.UNAUTHORIZED);
+enum class ResponseEnum(val code: String, val message: String) {
+    SUCCESS("2000", ResponseStatusConstant.SUCCESS),
+    BAD_REQUEST("4000", ResponseStatusConstant.BAD_REQUEST),
+    NO_CONTENT("2004", ResponseStatusConstant.NO_CONTENT),
+    CONFLICT("4009", ResponseStatusConstant.CONFLICT),
+    INTERNAL_SERVER_ERROR("5000", ResponseStatusConstant.INTERNAL_SERVER_ERROR),
+    UNAUTHORIZED("4001", ResponseStatusConstant.UNAUTHORIZED);
 
     companion object {
         fun getByCode(code: String?) =
-            entries.firstOrNull { responseEnum -> responseEnum.code == code } ?: UNKNOWN
+            entries.firstOrNull { responseEnum -> responseEnum.code == code } ?: INTERNAL_SERVER_ERROR
     }
 }

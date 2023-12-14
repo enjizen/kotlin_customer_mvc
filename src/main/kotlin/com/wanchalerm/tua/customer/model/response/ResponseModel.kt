@@ -23,8 +23,7 @@ class ResponseModel(
         this.status = responseStatus
             ?: ResponseStatus(
                 responseEnum?.code,
-                responseEnum?.message,
-                responseEnum?.description
+                responseEnum?.message
             )
         this.dataObj = dataObj
     }
