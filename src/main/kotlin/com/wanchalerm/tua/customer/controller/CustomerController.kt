@@ -6,8 +6,6 @@ import com.wanchalerm.tua.customer.model.response.ResponseModel
 import com.wanchalerm.tua.customer.service.ProfileService
 import jakarta.validation.Valid
 import java.util.concurrent.ExecutionException
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/v1")
 class CustomerController(private val profileService: ProfileService) {
-    val logger: Logger = LoggerFactory.getLogger(this::class.java)
     @GetMapping("/customers")
     @ResponseStatus(HttpStatus.OK)
     @Throws(
@@ -47,7 +44,6 @@ class CustomerController(private val profileService: ProfileService) {
     @PutMapping("/customers")
     fun update(@Valid @RequestBody request: CustomerRequest, @RequestParam("id") id: Int,
                @RequestParam("code") code: String): ResponseEntity<ResponseModel> {
-        logger.info("Update profile with id $id and code $code")
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(ResponseModel(ResponseEnum.SUCCESS, dataObj = profileService.update(request, id, code)))

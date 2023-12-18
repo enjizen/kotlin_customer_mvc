@@ -18,21 +18,16 @@ class LoggingAspect {
     @Around("execution(* com.wanchalerm.tua.customer.service..*(..)))")
     @Throws(Throwable::class)
     fun profileAllMethods(proceedingJoinPoint: ProceedingJoinPoint): Any? {
-        val methodSignature = proceedingJoinPoint.signature as MethodSignature
-
-        //Get intercepted method details
-        val className = methodSignature.declaringType.simpleName
-        val methodName = methodSignature.name
-
         val stopWatch = StopWatch()
-
         //Measure method execution time
         stopWatch.start()
         val result = proceedingJoinPoint.proceed()
         stopWatch.stop()
+        (proceedingJoinPoint.signature as MethodSignature).let {
+            //Log method execution time
+            logger.info("Execution time of ${it.declaringType.simpleName}.${it.name} :: ${stopWatch.totalTimeMillis} ms")
+        }
 
-        //Log method execution time
-        logger.info("Execution time of $className.$methodName :: ${stopWatch.totalTimeMillis} ms")
         return result
     }
 

@@ -30,7 +30,7 @@ class ProfileServiceServiceImpl(private val profileRepository: ProfileRepository
     }
 
     override fun delete(id: Int, code: String) {
-        val profileEntity = profileRepository.findByIdAndCodeAndDeletedFalse(id, code) ?: throw NoContentException("Not found profile with id: $id and code: $code")
+        val profileEntity = profileRepository.findByIdAndCodeAndDeletedFalse(id, code) ?: throw NoContentException(message = "Not found profile with id: $id and code: $code")
         profileEntity.deleted = true
         profileRepository.save(profileEntity)
     }
