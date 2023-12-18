@@ -1,6 +1,6 @@
 package com.wanchalerm.tua.customer.service
 
-import com.wanchalerm.tua.customer.exception.NoContentException
+import com.wanchalerm.tua.common.exception.NoContentException
 import com.wanchalerm.tua.customer.model.entity.ProfileEntity
 import com.wanchalerm.tua.customer.model.request.CustomerRequest
 import com.wanchalerm.tua.customer.repository.ProfileRepository

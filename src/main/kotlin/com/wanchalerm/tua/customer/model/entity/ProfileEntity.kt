@@ -17,7 +17,7 @@ import org.hibernate.annotations.UpdateTimestamp
 @Entity(name = "profiles")
 @DynamicUpdate
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-  class ProfileEntity {
+open class ProfileEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     var id: Int? = null

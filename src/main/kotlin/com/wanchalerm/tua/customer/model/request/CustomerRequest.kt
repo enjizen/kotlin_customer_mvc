@@ -3,10 +3,9 @@ package com.wanchalerm.tua.customer.model.request
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
-import com.wanchalerm.tua.customer.constant.DateFormatConstant.FORMAT_YYYY_MM_DD
-import com.wanchalerm.tua.customer.constant.DateFormatConstant.ZONE_ID_BANGKOK
-import com.wanchalerm.tua.customer.constant.RegexpConstant
-import com.wanchalerm.tua.customer.constant.RegexpConstant.NUMBER_FORMAT_ONLY
+import com.wanchalerm.tua.common.constant.DateFormatConstant.FORMAT_YYYY_MM_DD
+import com.wanchalerm.tua.common.constant.DateFormatConstant.ZONE_ID_BANGKOK
+import com.wanchalerm.tua.common.constant.RegexpConstant.NUMBER_FORMAT_ONLY
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
