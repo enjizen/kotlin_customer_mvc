@@ -1,4 +1,4 @@
-package com.wanchalerm.tua.customer.service
+package com.wanchalerm.tua.customer.service.profile
 
 import com.wanchalerm.tua.customer.model.entity.ProfileEntity
 import com.wanchalerm.tua.customer.model.request.CustomerRequest

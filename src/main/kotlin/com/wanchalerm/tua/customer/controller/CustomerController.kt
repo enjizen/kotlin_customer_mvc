@@ -3,7 +3,7 @@ package com.wanchalerm.tua.customer.controller
 import com.wanchalerm.tua.common.constant.ResponseEnum
 import com.wanchalerm.tua.common.model.response.ResponseModel
 import com.wanchalerm.tua.customer.model.request.CustomerRequest
-import com.wanchalerm.tua.customer.service.ProfileService
+import com.wanchalerm.tua.customer.service.profile.ProfileService
 import jakarta.validation.Valid
 import java.util.concurrent.ExecutionException
 import org.springframework.http.HttpStatus
