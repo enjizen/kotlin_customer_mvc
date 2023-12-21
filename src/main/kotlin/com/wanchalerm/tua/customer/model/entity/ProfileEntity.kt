@@ -19,39 +19,39 @@ import org.hibernate.annotations.UpdateTimestamp
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 open class ProfileEntity {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Int? = null
 
-    @Column(name = "code")
-    var code: String? = null
+    @Column(name = "code", nullable = false)
+    lateinit var code: String
 
-    @Column(name = "first_name")
-    var firstName: String? = null
+    @Column(name = "first_name", nullable = false)
+    lateinit var firstName: String
 
-    @Column(name = "last_name")
-    var lastName: String? = null
+    @Column(name = "last_name", nullable = false)
+    lateinit var lastName: String
 
-    @Column(name = "birth_date")
-    var birthDate: LocalDate? = null
+    @Column(name = "birth_date", nullable = false)
+    lateinit var birthDate: LocalDate
 
-    @Column(name = "mobile_number")
-    var mobileNumber: String? = null
+    @Column(name = "mobile_number", length = 10, nullable = false)
+    lateinit var mobileNumber: String
 
-    @Column(name = "email")
-    var email: String? = null
+    @Column(name = "email", length = 60, nullable = false)
+    lateinit var email: String
 
-    @Column(name = "created_date_time")
+    @Column(name = "created_date_time", nullable = false)
     @CreationTimestamp
-    var createdDateTime: LocalDateTime? = null
+    lateinit var createdDateTime: LocalDateTime
 
-    @Column(name = "updated_date_time")
+    @Column(name = "updated_date_time", nullable = false)
     @UpdateTimestamp
-    var updatedDateTime: LocalDateTime? = null
+    lateinit var updatedDateTime: LocalDateTime
 
-    @Column(name = "is_active")
-    var active: Boolean? = null
+    @Column(name = "is_active", nullable = false)
+    var active: Boolean = true
 
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    var deleted: Boolean? = null
+    var deleted: Boolean = false
 }
