@@ -16,8 +16,6 @@ class ProfileServiceServiceImpl(private val profileRepository: ProfileRepository
         ProfileEntity().apply {
             BeanUtils.copyProperties(customerRequest, this)
             code = UUID.randomUUID().toString()
-            active = true
-            deleted = false
         }.run {
             return profileRepository.save(this)
         }

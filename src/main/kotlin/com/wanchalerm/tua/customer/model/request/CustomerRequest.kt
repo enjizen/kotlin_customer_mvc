@@ -16,20 +16,21 @@ import java.time.LocalDate
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 class CustomerRequest (
     @field:NotBlank
-    val firstName: String,
+    val firstName: String? = null,
 
     @field:NotBlank
-    val lastName: String,
+    val lastName: String? = null,
 
     @field:NotNull
     @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = FORMAT_YYYY_MM_DD, timezone = ZONE_ID_BANGKOK)
-    val birthDate: LocalDate,
+    val birthDate: LocalDate? = null,
 
     @field:NotBlank
     @field:Pattern(regexp = NUMBER_FORMAT_ONLY)
     @field:Size(min = 10, max = 10)
-    val mobileNumber: String,
+    val mobileNumber: String? = null,
 
+    @field:NotBlank
     @field:Email
-    val email: String
+    val email: String? = null
 )

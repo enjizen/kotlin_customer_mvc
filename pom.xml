@@ -87,6 +87,11 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.wanchalerm.tua</groupId>
+			<artifactId>kotlin_common_example</artifactId>
+			<version>0.0.5</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
