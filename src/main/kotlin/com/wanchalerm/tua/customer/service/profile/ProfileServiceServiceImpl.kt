@@ -55,14 +55,14 @@ class ProfileServiceServiceImpl(private val profileRepository: ProfileRepository
         profileRepository.save(profileEntity)
     }
 
-    override fun updateMobileNumber(request: ProfileMobileUpdateRequest, id: Int, code: String): ProfileEntity {
+    override fun updateMobileNumber(mobileNumber: String, id: Int, code: String): ProfileEntity {
         val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(message = "Not found profile with id: $id and code: $code")
-        val existsMobileNumber = profileMobileRepository.existsByMobileNumber(request.mobileNumber!!)
+        val existsMobileNumber = profileMobileRepository.existsByMobileNumber(mobileNumber)
         if (existsMobileNumber) {
-            throw DuplicateException(message = "Mobile number ${request.mobileNumber} is duplicate")
+            throw DuplicateException(message = "Mobile number $mobileNumber is duplicate")
         }
         profileEntity.profilesMobiles.filter { it.isDeleted == false }.forEach { it.isDeleted = true }
-        profileEntity.profilesMobiles.add(ProfilesMobileEntity(mobileNumber = request.mobileNumber, profile = profileEntity))
+        profileEntity.profilesMobiles.add(ProfilesMobileEntity(mobileNumber = mobileNumber, profile = profileEntity))
         return profileRepository.save(profileEntity)
     }
 

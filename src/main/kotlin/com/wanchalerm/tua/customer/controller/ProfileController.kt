@@ -60,7 +60,7 @@ class ProfileController(private val profileService: ProfileService) {
     fun updateMobileNumber(@Valid @RequestBody request: ProfileMobileUpdateRequest, @RequestParam("id") id: Int, @RequestParam("code") code: String) : ResponseEntity<ResponseModel> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(ResponseModel(ResponseEnum.SUCCESS, dataObj = toProfileResponse(profileService.updateMobileNumber(request, id, code))))
+            .body(ResponseModel(ResponseEnum.SUCCESS, dataObj = toProfileResponse(profileService.updateMobileNumber(request.mobileNumber!!, id, code))))
     }
 
     internal fun toProfileResponse(profileEntity: ProfileEntity) : ProfileResponse {

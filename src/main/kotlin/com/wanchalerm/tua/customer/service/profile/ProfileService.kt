@@ -9,5 +9,5 @@ interface ProfileService {
     fun create(profileCreateRequest: ProfileCreateRequest): ProfileEntity
     fun update(profileUpdateRequest: ProfileUpdateRequest, id: Int, code: String): ProfileEntity
     fun delete(id: Int, code: String)
-    fun updateMobileNumber(request: ProfileMobileUpdateRequest, id: Int, code: String): ProfileEntity
+    fun updateMobileNumber(mobileNumber: String, id: Int, code: String): ProfileEntity
 }
