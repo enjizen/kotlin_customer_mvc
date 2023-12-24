@@ -14,7 +14,7 @@ import jakarta.validation.constraints.Size
 import java.time.LocalDate
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-class CustomerRequest (
+class ProfileCreateRequest (
     @field:NotBlank
     val firstName: String? = null,
 
@@ -32,5 +32,8 @@ class CustomerRequest (
 
     @field:NotBlank
     @field:Email
-    val email: String? = null
+    val email: String? = null,
+
+    @field:NotBlank
+    val password: String? = null
 )

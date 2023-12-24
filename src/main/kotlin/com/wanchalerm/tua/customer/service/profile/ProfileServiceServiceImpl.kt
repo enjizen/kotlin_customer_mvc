@@ -1,38 +1,79 @@
 package com.wanchalerm.tua.customer.service.profile
 
+import com.wanchalerm.tua.common.exception.DuplicateException
 import com.wanchalerm.tua.common.exception.NoContentException
 import com.wanchalerm.tua.customer.model.entity.ProfileEntity
-import com.wanchalerm.tua.customer.model.request.CustomerRequest
+import com.wanchalerm.tua.customer.model.entity.ProfilesEmailEntity
+import com.wanchalerm.tua.customer.model.entity.ProfilesMobileEntity
+import com.wanchalerm.tua.customer.model.entity.ProfilesPasswordEntity
+import com.wanchalerm.tua.customer.model.request.ProfileCreateRequest
+import com.wanchalerm.tua.customer.model.request.ProfileMobileUpdateRequest
+import com.wanchalerm.tua.customer.model.request.ProfileUpdateRequest
+import com.wanchalerm.tua.customer.repository.ProfileEmailRepository
+import com.wanchalerm.tua.customer.repository.ProfileMobileRepository
 import com.wanchalerm.tua.customer.repository.ProfileRepository
-import java.util.UUID
+import com.wanchalerm.tua.customer.util.EncodePassword
+import jakarta.transaction.Transactional
+import java.security.SecureRandom
+import java.util.*
 import org.springframework.beans.BeanUtils
 import org.springframework.stereotype.Service
 
 
 @Service
-class ProfileServiceServiceImpl(private val profileRepository: ProfileRepository) : ProfileService {
+class ProfileServiceServiceImpl(private val profileRepository: ProfileRepository,
+                                private val profileEmailRepository: ProfileEmailRepository,
+                                private val profileMobileRepository: ProfileMobileRepository) : ProfileService {
 
-    override fun create(customerRequest: CustomerRequest): ProfileEntity {
+    @Transactional
+    override fun create(profileCreateRequest: ProfileCreateRequest): ProfileEntity {
+
+        checkDuplicateEmailAndMobileNumber(profileCreateRequest)
+
+        val saltNumber = SecureRandom().nextInt(Integer.MAX_VALUE)
+        val password = EncodePassword.encode(profileCreateRequest.password!!, saltNumber)
         ProfileEntity().apply {
-            BeanUtils.copyProperties(customerRequest, this)
+            BeanUtils.copyProperties(profileCreateRequest, this)
             code = UUID.randomUUID().toString()
+            profilesMobiles = mutableSetOf(ProfilesMobileEntity(mobileNumber = profileCreateRequest.mobileNumber, profile = this))
+            profilesPasswords = mutableSetOf(ProfilesPasswordEntity(password = password, saltNumber = saltNumber, profile = this))
+            profilesEmail = mutableSetOf(ProfilesEmailEntity(email = profileCreateRequest.email, profile = this))
         }.run {
             return profileRepository.save(this)
         }
     }
 
-    override fun update(customerRequest: CustomerRequest, id: Int, code: String): ProfileEntity {
-        val profileEntity = profileRepository.findByIdAndCodeAndDeletedFalse(id, code) ?: throw NoContentException(message = "Not found profile with id: $id and code: $code")
-        BeanUtils.copyProperties(customerRequest, profileEntity)
+    override fun update(profileUpdateRequest: ProfileUpdateRequest, id: Int, code: String): ProfileEntity {
+        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(message = "Not found profile with id: $id and code: $code")
+        BeanUtils.copyProperties(profileUpdateRequest, profileEntity)
         return profileRepository.save(profileEntity)
     }
 
     override fun delete(id: Int, code: String) {
-        val profileEntity = profileRepository.findByIdAndCodeAndDeletedFalse(id, code) ?: throw NoContentException(message = "Not found profile with id: $id and code: $code")
-        profileEntity.deleted = true
+        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(message = "Not found profile with id: $id and code: $code")
+        profileEntity.isDeleted = true
         profileRepository.save(profileEntity)
     }
 
-    override fun getAll(): MutableList<ProfileEntity> = profileRepository.findAllByDeletedFalse()
-        ?: throw NoContentException()
+    override fun updateMobileNumber(request: ProfileMobileUpdateRequest, id: Int, code: String): ProfileEntity {
+        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(message = "Not found profile with id: $id and code: $code")
+        val existsMobileNumber = profileMobileRepository.existsByMobileNumber(request.mobileNumber!!)
+        if (existsMobileNumber) {
+            throw DuplicateException(message = "Mobile number ${request.mobileNumber} is duplicate")
+        }
+        profileEntity.profilesMobiles.filter { it.isDeleted == false }.forEach { it.isDeleted = true }
+        profileEntity.profilesMobiles.add(ProfilesMobileEntity(mobileNumber = request.mobileNumber, profile = profileEntity))
+        return profileRepository.save(profileEntity)
+    }
+
+    internal fun checkDuplicateEmailAndMobileNumber(profileCreateRequest: ProfileCreateRequest) {
+        val existsEmail = profileEmailRepository.existsByEmail(profileCreateRequest.email!!)
+        if (existsEmail) {
+            throw DuplicateException(message = "Email ${profileCreateRequest.email} is duplicate")
+        }
+        val existsMobileNumber = profileMobileRepository.existsByMobileNumber(profileCreateRequest.mobileNumber!!)
+        if (existsMobileNumber) {
+            throw DuplicateException(message = "Mobile number ${profileCreateRequest.mobileNumber} is duplicate")
+        }
+    }
 }

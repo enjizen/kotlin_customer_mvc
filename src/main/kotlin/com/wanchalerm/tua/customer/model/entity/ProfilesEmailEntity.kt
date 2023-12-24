@@ -16,22 +16,15 @@ import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 
 @Entity
-@Table(name = "profiles_password")
-open class ProfilesPasswordEntity (
+@Table(name = "profiles_email")
+open class ProfilesEmailEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     var id: Int? = null,
 
-    @Column(name = "password", nullable = false, length = 64)
-    var password: String? = null,
-    
-    @Column(name = "salt_number", nullable = false)
-    var saltNumber: Int? = null,
-    
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "profile_id", nullable = false)
-    var profile: ProfileEntity? = null,
+    @Column(name = "email", nullable = false, length = 60, unique = true)
+    var email: String? = null,
 
     @Column(name = "created_timestamp", nullable = false)
     @CreationTimestamp
@@ -42,5 +35,9 @@ open class ProfilesPasswordEntity (
     var updatedTimestamp: LocalDateTime? = null,
 
     @Column(name = "is_deleted", nullable = false)
-    var isDeleted: Boolean? = false
+    var isDeleted: Boolean? = false,
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "profile_id", nullable = false)
+    var profile: ProfileEntity? = null
 )
