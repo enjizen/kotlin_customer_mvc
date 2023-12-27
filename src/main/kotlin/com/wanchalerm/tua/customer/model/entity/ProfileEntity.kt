@@ -1,57 +1,56 @@
 package com.wanchalerm.tua.customer.model.entity
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.databind.PropertyNamingStrategies
-import com.fasterxml.jackson.databind.annotation.JsonNaming
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
+import jakarta.persistence.Table
 import java.time.LocalDate
 import java.time.LocalDateTime
 import org.hibernate.annotations.CreationTimestamp
-import org.hibernate.annotations.DynamicUpdate
 import org.hibernate.annotations.UpdateTimestamp
 
-@Entity(name = "profiles")
-@DynamicUpdate
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-open class ProfileEntity {
+@Entity
+@Table(name = "profiles")
+open class ProfileEntity (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Int? = null
+    @Column(name = "id", nullable = false)
+    var id: Int? = null,
 
-    @Column(name = "code", nullable = false)
-    lateinit var code: String
+    @Column(name = "code", nullable = false, length = 36)
+    var code: String? = null,
 
-    @Column(name = "first_name", nullable = false)
-    lateinit var firstName: String
+    @Column(name = "first_name", nullable = false, length = 50)
+    var firstName: String? = null,
 
-    @Column(name = "last_name", nullable = false)
-    lateinit var lastName: String
+    @Column(name = "last_name", nullable = false, length = 50)
+    var lastName: String? = null,
 
-    @Column(name = "birth_date", nullable = false)
-    lateinit var birthDate: LocalDate
+    @Column(name = "birth_date")
+    var birthDate: LocalDate? = null,
 
-    @Column(name = "mobile_number", length = 10, nullable = false)
-    lateinit var mobileNumber: String
-
-    @Column(name = "email", length = 60, nullable = false)
-    lateinit var email: String
-
-    @Column(name = "created_date_time", nullable = false)
+    @Column(name = "created_timestamp", nullable = false)
     @CreationTimestamp
-    lateinit var createdDateTime: LocalDateTime
+    var createdTimestamp: LocalDateTime? = null,
 
-    @Column(name = "updated_date_time", nullable = false)
+    @Column(name = "updated_timestamp", nullable = false)
     @UpdateTimestamp
-    lateinit var updatedDateTime: LocalDateTime
-
-    @Column(name = "is_active", nullable = false)
-    var active: Boolean = true
+    var updatedTimestamp: LocalDateTime? = null,
 
     @Column(name = "is_deleted", nullable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    var deleted: Boolean = false
-}
+    var isDeleted: Boolean? = false,
+
+    @OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    var profilesMobiles: MutableSet<ProfilesMobileEntity> = mutableSetOf(),
+
+    @OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    var profilesPasswords: MutableSet<ProfilesPasswordEntity> = mutableSetOf(),
+
+    @OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    var profilesEmail: MutableSet<ProfilesEmailEntity> = mutableSetOf()
+)
