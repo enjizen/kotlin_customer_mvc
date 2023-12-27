@@ -5,6 +5,7 @@ import com.wanchalerm.tua.common.model.response.ResponseModel
 import com.wanchalerm.tua.customer.model.entity.ProfileEntity
 import com.wanchalerm.tua.customer.model.request.ProfileCreateRequest
 import com.wanchalerm.tua.customer.model.request.ProfileMobileUpdateRequest
+import com.wanchalerm.tua.customer.model.request.ProfilePasswordRequest
 import com.wanchalerm.tua.customer.model.request.ProfileUpdateRequest
 import com.wanchalerm.tua.customer.model.response.ProfileResponse
 import com.wanchalerm.tua.customer.service.profile.ProfileService
@@ -61,6 +62,13 @@ class ProfileController(private val profileService: ProfileService) {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(ResponseModel(ResponseEnum.SUCCESS, dataObj = toProfileResponse(profileService.updateMobileNumber(request.mobileNumber!!, id, code))))
+    }
+
+    @PatchMapping("/profiles/password")
+    fun updatePassword(@Valid @RequestBody request: ProfilePasswordRequest, @RequestParam("id") id: Int, @RequestParam("code") code: String) : ResponseEntity<ResponseModel> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(ResponseModel(ResponseEnum.SUCCESS, dataObj = toProfileResponse(profileService.updatePassword(request.password!!, id, code))))
     }
 
     internal fun toProfileResponse(profileEntity: ProfileEntity) : ProfileResponse {

@@ -7,10 +7,10 @@ import com.wanchalerm.tua.customer.model.entity.ProfilesEmailEntity
 import com.wanchalerm.tua.customer.model.entity.ProfilesMobileEntity
 import com.wanchalerm.tua.customer.model.entity.ProfilesPasswordEntity
 import com.wanchalerm.tua.customer.model.request.ProfileCreateRequest
-import com.wanchalerm.tua.customer.model.request.ProfileMobileUpdateRequest
 import com.wanchalerm.tua.customer.model.request.ProfileUpdateRequest
 import com.wanchalerm.tua.customer.repository.ProfileEmailRepository
 import com.wanchalerm.tua.customer.repository.ProfileMobileRepository
+import com.wanchalerm.tua.customer.repository.ProfilePasswordRepository
 import com.wanchalerm.tua.customer.repository.ProfileRepository
 import com.wanchalerm.tua.customer.util.EncodePassword
 import jakarta.transaction.Transactional
@@ -23,7 +23,8 @@ import org.springframework.stereotype.Service
 @Service
 class ProfileServiceServiceImpl(private val profileRepository: ProfileRepository,
                                 private val profileEmailRepository: ProfileEmailRepository,
-                                private val profileMobileRepository: ProfileMobileRepository) : ProfileService {
+                                private val profileMobileRepository: ProfileMobileRepository,
+                                private val profilePasswordRepository: ProfilePasswordRepository) : ProfileService {
 
     @Transactional
     override fun create(profileCreateRequest: ProfileCreateRequest): ProfileEntity {
@@ -66,6 +67,23 @@ class ProfileServiceServiceImpl(private val profileRepository: ProfileRepository
         return profileRepository.save(profileEntity)
     }
 
+    override fun updatePassword(password: String, id: Int, code: String): ProfileEntity {
+        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(message = "Not found profile with id: $id and code: $code")
+        val existsPassword = profilePasswordRepository.existsByPasswordAndId(password, id)
+        if (existsPassword) {
+            throw DuplicateException(message = "Password $password is duplicate")
+        }
+        val saltNumber = SecureRandom().nextInt(Integer.MAX_VALUE)
+        val passwordEncode = EncodePassword.encode(password, saltNumber)
+        profileEntity.profilesPasswords.filter { it.isDeleted == false }.forEach { it.isDeleted = true }
+        profileEntity.profilesPasswords.add(ProfilesPasswordEntity(password = passwordEncode, saltNumber = saltNumber, profile = profileEntity))
+        return profileRepository.save(profileEntity)
+    }
+
+    override fun getByMobileNumber(mobileNumber: String): ProfileEntity {
+        TODO("Not yet implemented")
+    }
+
     internal fun checkDuplicateEmailAndMobileNumber(profileCreateRequest: ProfileCreateRequest) {
         val existsEmail = profileEmailRepository.existsByEmail(profileCreateRequest.email!!)
         if (existsEmail) {
@@ -76,4 +94,5 @@ class ProfileServiceServiceImpl(private val profileRepository: ProfileRepository
             throw DuplicateException(message = "Mobile number ${profileCreateRequest.mobileNumber} is duplicate")
         }
     }
+
 }

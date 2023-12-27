@@ -10,4 +10,7 @@ interface ProfileService {
     fun update(profileUpdateRequest: ProfileUpdateRequest, id: Int, code: String): ProfileEntity
     fun delete(id: Int, code: String)
     fun updateMobileNumber(mobileNumber: String, id: Int, code: String): ProfileEntity
+    fun updatePassword(password: String, id: Int, code: String): ProfileEntity
+
+    fun getByMobileNumber(mobileNumber: String): ProfileEntity
 }

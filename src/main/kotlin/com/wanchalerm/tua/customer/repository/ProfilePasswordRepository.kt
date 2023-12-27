@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ProfilePasswordRepository : CrudRepository<ProfilesPasswordEntity, Int> {
+    fun existsByPasswordAndId(password: String, id: Int): Boolean
 }
