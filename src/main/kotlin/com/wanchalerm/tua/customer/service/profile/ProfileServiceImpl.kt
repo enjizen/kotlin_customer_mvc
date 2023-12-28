@@ -21,10 +21,10 @@ import org.springframework.stereotype.Service
 
 
 @Service
-class ProfileServiceServiceImpl(private val profileRepository: ProfileRepository,
-                                private val profileEmailRepository: ProfileEmailRepository,
-                                private val profileMobileRepository: ProfileMobileRepository,
-                                private val profilePasswordRepository: ProfilePasswordRepository) : ProfileService {
+class ProfileServiceImpl(private val profileRepository: ProfileRepository,
+                         private val profileEmailRepository: ProfileEmailRepository,
+                         private val profileMobileRepository: ProfileMobileRepository,
+                         private val profilePasswordRepository: ProfilePasswordRepository) : ProfileService {
 
     @Transactional
     override fun create(profileCreateRequest: ProfileCreateRequest): ProfileEntity {
