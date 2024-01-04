@@ -80,10 +80,6 @@ class ProfileServiceImpl(private val profileRepository: ProfileRepository,
         return profileRepository.save(profileEntity)
     }
 
-    override fun getByMobileNumber(mobileNumber: String): ProfileEntity {
-        TODO("Not yet implemented")
-    }
-
     override fun getByCode(code: String): ProfileEntity {
         return profileRepository.findByCodeAndIsDeletedFalse(code) ?:  throw NoContentException(message = "Not found profile with code: $code")
     }

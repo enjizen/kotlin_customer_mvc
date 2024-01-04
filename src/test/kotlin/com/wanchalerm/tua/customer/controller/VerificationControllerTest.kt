@@ -1,6 +1,5 @@
 package com.wanchalerm.tua.customer.controller
 
-
 import com.jayway.jsonpath.JsonPath
 import com.wanchalerm.tua.customer.service.oauth.OauthProfileService
 import org.hamcrest.CoreMatchers
@@ -28,6 +27,7 @@ class VerificationControllerTest {
     @MockBean
     private lateinit var oauthProfileService: OauthProfileService
 
+
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -36,7 +36,6 @@ class VerificationControllerTest {
 
     @Test
     fun `authentication with email`() {
-
         val resource = resourceLoader.classLoader!!.getResourceAsStream("verify_pass.json")
         val content = JsonPath.parse(resource).jsonString()
 
