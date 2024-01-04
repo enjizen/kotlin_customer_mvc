@@ -13,4 +13,6 @@ interface ProfileService {
     fun updatePassword(password: String, id: Int, code: String): ProfileEntity
 
     fun getByMobileNumber(mobileNumber: String): ProfileEntity
+
+    fun getByCode(code: String): ProfileEntity
 }

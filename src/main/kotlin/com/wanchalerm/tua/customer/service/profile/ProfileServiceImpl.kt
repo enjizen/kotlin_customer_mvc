@@ -84,6 +84,10 @@ class ProfileServiceImpl(private val profileRepository: ProfileRepository,
         TODO("Not yet implemented")
     }
 
+    override fun getByCode(code: String): ProfileEntity {
+        return profileRepository.findByCodeAndIsDeletedFalse(code) ?:  throw NoContentException(message = "Not found profile with code: $code")
+    }
+
     internal fun checkDuplicateEmailAndMobileNumber(profileCreateRequest: ProfileCreateRequest) {
         val existsEmail = profileEmailRepository.existsByEmail(profileCreateRequest.email!!)
         if (existsEmail) {

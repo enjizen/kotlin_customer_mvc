@@ -28,7 +28,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 
-@SpringBootTest
+@SpringBootTest(properties = ["spring.main.lazy-initialization = true"])
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class ProfileControllerTest {
