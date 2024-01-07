@@ -14,7 +14,9 @@ import org.springframework.beans.BeanUtils
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -44,6 +46,13 @@ class ProfileController(private val profileService: ProfileService) {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(ResponseModel(ResponseEnum.SUCCESS, dataObj = toProfileResponse(profileService.update(request, id, code))))
+    }
+
+    @GetMapping("/profiles/{code}")
+    fun getProfileWithCode(@PathVariable("code") code: String): ResponseEntity<ResponseModel> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(ResponseModel(ResponseEnum.SUCCESS, dataObj = toProfileResponse(profileService.getByCode(code))))
     }
 
     @DeleteMapping("/profiles")

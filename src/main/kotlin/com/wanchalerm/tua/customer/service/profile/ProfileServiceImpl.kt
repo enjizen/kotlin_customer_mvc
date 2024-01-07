@@ -21,10 +21,10 @@ import org.springframework.stereotype.Service
 
 
 @Service
-class ProfileServiceServiceImpl(private val profileRepository: ProfileRepository,
-                                private val profileEmailRepository: ProfileEmailRepository,
-                                private val profileMobileRepository: ProfileMobileRepository,
-                                private val profilePasswordRepository: ProfilePasswordRepository) : ProfileService {
+class ProfileServiceImpl(private val profileRepository: ProfileRepository,
+                         private val profileEmailRepository: ProfileEmailRepository,
+                         private val profileMobileRepository: ProfileMobileRepository,
+                         private val profilePasswordRepository: ProfilePasswordRepository) : ProfileService {
 
     @Transactional
     override fun create(profileCreateRequest: ProfileCreateRequest): ProfileEntity {
@@ -80,8 +80,8 @@ class ProfileServiceServiceImpl(private val profileRepository: ProfileRepository
         return profileRepository.save(profileEntity)
     }
 
-    override fun getByMobileNumber(mobileNumber: String): ProfileEntity {
-        TODO("Not yet implemented")
+    override fun getByCode(code: String): ProfileEntity {
+        return profileRepository.findByCodeAndIsDeletedFalse(code) ?:  throw NoContentException(message = "Not found profile with code: $code")
     }
 
     internal fun checkDuplicateEmailAndMobileNumber(profileCreateRequest: ProfileCreateRequest) {

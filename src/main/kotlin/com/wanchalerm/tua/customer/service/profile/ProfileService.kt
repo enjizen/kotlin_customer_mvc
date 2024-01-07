@@ -11,6 +11,5 @@ interface ProfileService {
     fun delete(id: Int, code: String)
     fun updateMobileNumber(mobileNumber: String, id: Int, code: String): ProfileEntity
     fun updatePassword(password: String, id: Int, code: String): ProfileEntity
-
-    fun getByMobileNumber(mobileNumber: String): ProfileEntity
+    fun getByCode(code: String): ProfileEntity
 }
