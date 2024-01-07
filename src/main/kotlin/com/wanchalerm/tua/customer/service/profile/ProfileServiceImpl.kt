@@ -80,9 +80,6 @@ class ProfileServiceImpl(private val profileRepository: ProfileRepository,
         return profileRepository.save(profileEntity)
     }
 
-    override fun getByMobileNumber(mobileNumber: String): ProfileEntity {
-        TODO("Not yet implemented")
-    }
 
     internal fun checkDuplicateEmailAndMobileNumber(profileCreateRequest: ProfileCreateRequest) {
         val existsEmail = profileEmailRepository.existsByEmail(profileCreateRequest.email!!)
