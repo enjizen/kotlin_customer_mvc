@@ -16,41 +16,41 @@ import org.hibernate.annotations.UpdateTimestamp
 
 @Entity
 @Table(name = "profiles")
-open class ProfileEntity (
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+ class ProfileEntity (
+    @field:Id
+    @field:GeneratedValue(strategy = GenerationType.IDENTITY)
+    @field:Column(name = "id", nullable = false)
     var id: Int? = null,
 
-    @Column(name = "code", nullable = false, length = 36)
+    @field:Column(name = "code", nullable = false, length = 36)
     var code: String? = null,
 
-    @Column(name = "first_name", nullable = false, length = 50)
+    @field:Column(name = "first_name", nullable = false, length = 50)
     var firstName: String? = null,
 
-    @Column(name = "last_name", nullable = false, length = 50)
+    @field:Column(name = "last_name", nullable = false, length = 50)
     var lastName: String? = null,
 
-    @Column(name = "birth_date")
+    @field:Column(name = "birth_date")
     var birthDate: LocalDate? = null,
 
-    @Column(name = "created_timestamp", nullable = false)
-    @CreationTimestamp
+    @field:Column(name = "created_timestamp", nullable = false)
+    @field:CreationTimestamp
     var createdTimestamp: LocalDateTime? = null,
 
-    @Column(name = "updated_timestamp", nullable = false)
-    @UpdateTimestamp
+    @field:Column(name = "updated_timestamp", nullable = false)
+    @field:UpdateTimestamp
     var updatedTimestamp: LocalDateTime? = null,
 
-    @Column(name = "is_deleted", nullable = false)
+    @field:Column(name = "is_deleted", nullable = false)
     var isDeleted: Boolean? = false,
 
-    @OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @field:OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var profilesMobiles: MutableSet<ProfilesMobileEntity> = mutableSetOf(),
 
-    @OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @field:OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var profilesPasswords: MutableSet<ProfilesPasswordEntity> = mutableSetOf(),
 
-    @OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @field:OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     var profilesEmail: MutableSet<ProfilesEmailEntity> = mutableSetOf()
 )

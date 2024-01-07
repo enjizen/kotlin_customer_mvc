@@ -15,27 +15,27 @@ import org.hibernate.annotations.UpdateTimestamp
 
 @Entity
 @Table(name = "profiles_mobile")
-open class ProfilesMobileEntity(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+ class ProfilesMobileEntity(
+    @field:Id
+    @field:GeneratedValue(strategy = GenerationType.IDENTITY)
+    @field:Column(name = "id", nullable = false)
     var id: Int? = null,
 
-    @Column(name = "mobile_number", nullable = false, length = 10, unique = true)
+    @field:Column(name = "mobile_number", nullable = false, length = 10, unique = true)
     var mobileNumber: String? = null,
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "profile_id", nullable = false)
+    @field:ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @field:JoinColumn(name = "profile_id", nullable = false)
     var profile: ProfileEntity? = null,
 
-    @Column(name = "created_timestamp", nullable = false)
-    @CreationTimestamp
+    @field:Column(name = "created_timestamp", nullable = false)
+    @field:CreationTimestamp
     var createdTimestamp: LocalDateTime? = null,
 
-    @Column(name = "updated_timestamp", nullable = false)
-    @UpdateTimestamp
+    @field:Column(name = "updated_timestamp", nullable = false)
+    @field:UpdateTimestamp
     var updatedTimestamp: LocalDateTime? = null,
 
-    @Column(name = "is_deleted", nullable = false)
+    @field:Column(name = "is_deleted", nullable = false)
     var isDeleted: Boolean? = false,
 )
