@@ -42,5 +42,5 @@ class ProfilesPasswordEntity (
     var updatedTimestamp: LocalDateTime? = null,
 
     @field:Column(name = "is_deleted", nullable = false)
-    var isDeleted: Boolean? = false
+    var isDeleted: Boolean = false
 )

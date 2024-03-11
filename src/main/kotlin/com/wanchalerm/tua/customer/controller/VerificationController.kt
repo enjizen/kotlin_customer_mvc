@@ -22,17 +22,16 @@ class VerificationController(private val oauthService: OauthService) {
 
     @PostMapping("/verify/pass")
     fun authenticationWithEmail(@Valid @RequestBody authenticationRequest: AuthenticationRequest) : ResponseEntity<ResponseModel> {
-        val code = if (authenticationRequest.username.isValidEmail()) {
-            oauthService.authentication(email = authenticationRequest.username, password = authenticationRequest.password!!)
-        } else if (authenticationRequest.username.isValidMobileNumber()) {
-            oauthService.authentication(mobileNumber = authenticationRequest.username, password = authenticationRequest.password!!)
-        } else {
-            throw InputValidationException(message = "Username type not found")
-        }
-
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(ResponseModel(ResponseEnum.SUCCESS, dataObj = AuthenticationResponse(customerCode = code)))
+            .body(ResponseModel(ResponseEnum.SUCCESS, dataObj = AuthenticationResponse(authenticate(authenticationRequest.username, authenticationRequest.password))))
     }
 
+    private fun authenticate(username: String?, password: String?): String? {
+        return when {
+            username.isValidEmail() -> oauthService.authenticateWithEmail(email = username!!, password = password!!)
+            username.isValidMobileNumber() -> oauthService.authenticateWithMobileNumber(mobileNumber = username!!, password = password!!)
+            else -> throw InputValidationException(message = "Invalid username format")
+        }
+    }
 }
