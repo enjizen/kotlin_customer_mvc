@@ -2,6 +2,7 @@ package com.wanchalerm.tua.customer.service.profile
 
 import com.wanchalerm.tua.common.exception.DuplicateException
 import com.wanchalerm.tua.common.exception.NoContentException
+import com.wanchalerm.tua.customer.extension.buildProfileEntity
 import com.wanchalerm.tua.customer.model.entity.ProfileEntity
 import com.wanchalerm.tua.customer.model.entity.ProfilesEmailEntity
 import com.wanchalerm.tua.customer.model.entity.ProfilesMobileEntity
@@ -21,10 +22,12 @@ import org.springframework.stereotype.Service
 
 
 @Service
-class ProfileServiceImpl(private val profileRepository: ProfileRepository,
-                         private val profileEmailRepository: ProfileEmailRepository,
-                         private val profileMobileRepository: ProfileMobileRepository,
-                         private val profilePasswordRepository: ProfilePasswordRepository) : ProfileService {
+class ProfileServiceImpl(
+    private val profileRepository: ProfileRepository,
+    private val profileEmailRepository: ProfileEmailRepository,
+    private val profileMobileRepository: ProfileMobileRepository,
+    private val profilePasswordRepository: ProfilePasswordRepository
+) : ProfileService {
 
     @Transactional
     override fun create(profileCreateRequest: ProfileCreateRequest): ProfileEntity {
@@ -33,31 +36,29 @@ class ProfileServiceImpl(private val profileRepository: ProfileRepository,
 
         val saltNumber = SecureRandom().nextInt(Integer.MAX_VALUE)
         val password = EncodePassword.encode(profileCreateRequest.password!!, saltNumber)
-        ProfileEntity().apply {
-            BeanUtils.copyProperties(profileCreateRequest, this)
-            code = UUID.randomUUID().toString()
-            profilesMobiles = mutableSetOf(ProfilesMobileEntity(mobileNumber = profileCreateRequest.mobileNumber, profile = this))
-            profilesPasswords = mutableSetOf(ProfilesPasswordEntity(password = password, saltNumber = saltNumber, profile = this))
-            profilesEmail = mutableSetOf(ProfilesEmailEntity(email = profileCreateRequest.email, profile = this))
-        }.run {
-            return profileRepository.save(this)
-        }
+        return profileRepository.save(profileCreateRequest.buildProfileEntity(saltNumber, password))
     }
 
     override fun update(profileUpdateRequest: ProfileUpdateRequest, id: Int, code: String): ProfileEntity {
-        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(message = "Not found profile with id: $id and code: $code")
+        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(
+            message = "Not found profile with id: $id and code: $code"
+        )
         BeanUtils.copyProperties(profileUpdateRequest, profileEntity)
         return profileRepository.save(profileEntity)
     }
 
     override fun delete(id: Int, code: String) {
-        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(message = "Not found profile with id: $id and code: $code")
+        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(
+            message = "Not found profile with id: $id and code: $code"
+        )
         profileEntity.isDeleted = true
         profileRepository.save(profileEntity)
     }
 
     override fun updateMobileNumber(mobileNumber: String, id: Int, code: String): ProfileEntity {
-        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(message = "Not found profile with id: $id and code: $code")
+        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(
+            message = "Not found profile with id: $id and code: $code"
+        )
         val existsMobileNumber = profileMobileRepository.existsByMobileNumber(mobileNumber)
         if (existsMobileNumber) {
             throw DuplicateException(message = "Mobile number $mobileNumber is duplicate")
@@ -68,7 +69,9 @@ class ProfileServiceImpl(private val profileRepository: ProfileRepository,
     }
 
     override fun updatePassword(password: String, id: Int, code: String): ProfileEntity {
-        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(message = "Not found profile with id: $id and code: $code")
+        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(
+            message = "Not found profile with id: $id and code: $code"
+        )
         val existsPassword = profilePasswordRepository.existsByPasswordAndId(password, id)
         if (existsPassword) {
             throw DuplicateException(message = "Password $password is duplicate")
@@ -76,7 +79,13 @@ class ProfileServiceImpl(private val profileRepository: ProfileRepository,
         val saltNumber = SecureRandom().nextInt(Integer.MAX_VALUE)
         val passwordEncode = EncodePassword.encode(password, saltNumber)
         profileEntity.profilesPasswords.filter { !it.isDeleted }.forEach { it.isDeleted = true }
-        profileEntity.profilesPasswords.add(ProfilesPasswordEntity(password = passwordEncode, saltNumber = saltNumber, profile = profileEntity))
+        profileEntity.profilesPasswords.add(
+            ProfilesPasswordEntity(
+                password = passwordEncode,
+                saltNumber = saltNumber,
+                profile = profileEntity
+            )
+        )
         return profileRepository.save(profileEntity)
     }
 
@@ -91,5 +100,4 @@ class ProfileServiceImpl(private val profileRepository: ProfileRepository,
             throw DuplicateException(message = "Mobile number ${profileCreateRequest.mobileNumber} is duplicate")
         }
     }
-
 }
