@@ -75,7 +75,7 @@ class ProfileServiceImpl(private val profileRepository: ProfileRepository,
         }
         val saltNumber = SecureRandom().nextInt(Integer.MAX_VALUE)
         val passwordEncode = EncodePassword.encode(password, saltNumber)
-        profileEntity.profilesPasswords.filter { it.isDeleted == false }.forEach { it.isDeleted = true }
+        profileEntity.profilesPasswords.filter { !it.isDeleted }.forEach { it.isDeleted = true }
         profileEntity.profilesPasswords.add(ProfilesPasswordEntity(password = passwordEncode, saltNumber = saltNumber, profile = profileEntity))
         return profileRepository.save(profileEntity)
     }
