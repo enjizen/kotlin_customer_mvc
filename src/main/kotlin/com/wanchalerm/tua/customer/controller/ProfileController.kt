@@ -73,10 +73,10 @@ class ProfileController(private val profileService: ProfileService) {
     }
 
     internal fun toProfileResponse(profileEntity: ProfileEntity) : ProfileResponse {
-        val profileResponse = ProfileResponse()
-        BeanUtils.copyProperties(profileEntity, profileResponse)
-        profileResponse.mobileNumber = profileEntity.profilesMobiles.first { it.isDeleted == false }.mobileNumber
-        profileResponse.email = profileEntity.profilesEmail.first { it.isDeleted == false }.email
-        return profileResponse
+        return ProfileResponse().apply {
+            BeanUtils.copyProperties(profileEntity, this)
+            this.mobileNumber = profileEntity.profilesMobiles.first { it.isDeleted == false }.mobileNumber
+            this.email = profileEntity.profilesEmail.first { it.isDeleted == false }.email
+        }
     }
 }

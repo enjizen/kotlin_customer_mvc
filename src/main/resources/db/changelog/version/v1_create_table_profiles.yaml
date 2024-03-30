@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id:  1
+      author:  wanchalerm
+      comment: profiles
+      changes:
+        - createTable:
+            tableName:  profiles
+            columns:
+              - column:
+                  name:  id
+                  type:  INT
+                  autoIncrement:  true
+                  constraints:
+                    primaryKey:  true
+                    nullable:  false
+              - column:
+                  name:  code
+                  type:  CHAR(36)
+                  constraints:
+                    nullable:  false
+              - column:
+                  name:  first_name
+                  type:  VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name:  last_name
+                  type:  VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name:  birth_date
+                  type:  DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name:  created_timestamp
+                  type:  TIMESTAMP(6)
+                  defaultValueComputed: NOW(6)
+                  constraints:
+                    nullable: false
+              - column:
+                  name:  updated_timestamp
+                  type:  TIMESTAMP(6)
+                  defaultValueComputed: NOW(6)
+                  constraints:
+                    nullable: false
+              - column:
+                  name:  is_deleted
+                  type:  TINYINT(1)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            constraintName: unique_constraint_code
+            tableName: profiles
+            columnNames: code

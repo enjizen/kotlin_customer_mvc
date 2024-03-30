@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - include:
+      file: version/v1_create_table_profiles.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: version/v2_create_table_profiles_email.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: version/v3_create_table_profiles_mobile_number.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: version/v4_create_table_profiles_password.yaml
+      relativeToChangelogFile: true

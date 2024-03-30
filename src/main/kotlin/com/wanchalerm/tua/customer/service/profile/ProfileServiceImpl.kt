@@ -34,7 +34,8 @@ class ProfileServiceImpl(
 
         checkDuplicateEmailAndMobileNumber(profileCreateRequest)
 
-        val saltNumber = SecureRandom().nextInt(Integer.MAX_VALUE)
+        val saltNumber = EncodePassword.createSaltNumber()
+        println("salt_number : $saltNumber")
         val password = EncodePassword.encode(profileCreateRequest.password!!, saltNumber)
         return profileRepository.save(profileCreateRequest.buildProfileEntity(saltNumber, password))
     }
@@ -69,16 +70,20 @@ class ProfileServiceImpl(
     }
 
     override fun updatePassword(password: String, id: Int, code: String): ProfileEntity {
-        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code) ?: throw NoContentException(
-            message = "Not found profile with id: $id and code: $code"
-        )
-        val existsPassword = profilePasswordRepository.existsByPasswordAndId(password, id)
-        if (existsPassword) {
-            throw DuplicateException(message = "Password $password is duplicate")
+        val profileEntity = profileRepository.findByIdAndCodeAndIsDeletedFalse(id, code)
+            ?: throw NoContentException("Not found profile with id: $id and code: $code")
+
+        if (profilePasswordRepository.existsByPasswordAndId(password, id)) {
+            throw DuplicateException("Password $password is duplicate")
         }
-        val saltNumber = SecureRandom().nextInt(Integer.MAX_VALUE)
+
+        val saltNumber = EncodePassword.createSaltNumber()
         val passwordEncode = EncodePassword.encode(password, saltNumber)
+
+        // Mark all existing passwords as deleted
         profileEntity.profilesPasswords.filter { !it.isDeleted }.forEach { it.isDeleted = true }
+
+        // Add the new password
         profileEntity.profilesPasswords.add(
             ProfilesPasswordEntity(
                 password = passwordEncode,
@@ -86,18 +91,20 @@ class ProfileServiceImpl(
                 profile = profileEntity
             )
         )
+
         return profileRepository.save(profileEntity)
     }
+
 
 
     internal fun checkDuplicateEmailAndMobileNumber(profileCreateRequest: ProfileCreateRequest) {
         val existsEmail = profileEmailRepository.existsByEmail(profileCreateRequest.email!!)
         if (existsEmail) {
-            throw DuplicateException(message = "Email ${profileCreateRequest.email} is duplicate")
+            throw DuplicateException(message = "Email is duplicate")
         }
         val existsMobileNumber = profileMobileRepository.existsByMobileNumber(profileCreateRequest.mobileNumber!!)
         if (existsMobileNumber) {
-            throw DuplicateException(message = "Mobile number ${profileCreateRequest.mobileNumber} is duplicate")
+            throw DuplicateException(message = "Mobile number is duplicate")
         }
     }
 }
