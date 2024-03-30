@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ProfileRepository : CrudRepository<ProfileEntity, Int> {
     fun findByIdAndCodeAndIsDeletedFalse(id: Int, code: String): ProfileEntity?
+
+    fun findByCodeAndIsDeletedFalse(code: String): ProfileEntity?
 }

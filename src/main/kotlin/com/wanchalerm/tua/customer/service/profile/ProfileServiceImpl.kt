@@ -26,6 +26,7 @@ class ProfileServiceImpl(
     private val profilePasswordRepository: ProfilePasswordRepository
 ) : ProfileService {
 
+
     @Transactional
     override fun create(profileCreateRequest: ProfileCreateRequest): ProfileEntity {
 
@@ -101,5 +102,10 @@ class ProfileServiceImpl(
         if (existsMobileNumber) {
             throw DuplicateException(message = "Mobile number is duplicate")
         }
+    }
+
+    override fun getByCode(code: String): ProfileEntity {
+        return profileRepository.findByCodeAndIsDeletedFalse(code)
+            ?: throw NoContentException(message = "Not found profile with code: $code")
     }
 }

@@ -12,10 +12,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
-class OauthServiceImpl(
+class OauthProfileServiceImpl(
     private val profileEmailService: ProfileEmailService,
     private val profileMobileService: ProfileMobileService
-) : OauthService {
+) : OauthProfileService {
 
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -30,8 +30,10 @@ class OauthServiceImpl(
     }
 
     private fun authenticateProfile(profile: ProfileEntity, password: String): String? {
-        val profilePassword = profile.profilesPasswords.firstOrNull { !it.isDeleted } ?: throw NoContentException("profile ${profile.code} not found password")
-        val saltNumber = profilePassword.saltNumber ?: throw NoContentException("profile ${profile.code} saltNumber not found")
+        val profilePassword = profile.profilesPasswords.firstOrNull { !it.isDeleted }
+            ?: throw NoContentException("profile ${profile.code} not found password")
+        val saltNumber =
+            profilePassword.saltNumber ?: throw NoContentException("profile ${profile.code} saltNumber not found")
 
         if (EncodePassword.encode(password, saltNumber) != profilePassword.password) {
             throw BusinessException(code = ResponseEnum.CONFLICT.code, "Password does not match")

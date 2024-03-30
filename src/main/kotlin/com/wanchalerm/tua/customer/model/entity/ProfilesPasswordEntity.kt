@@ -1,6 +1,5 @@
 package com.wanchalerm.tua.customer.model.entity
 
-
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -14,6 +13,7 @@ import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 
+
 @Entity
 @Table(name = "profiles_password")
 class ProfilesPasswordEntity (
@@ -24,10 +24,10 @@ class ProfilesPasswordEntity (
 
     @field:Column(name = "password", nullable = false, length = 64)
     var password: String? = null,
-    
+
     @field:Column(name = "salt_number", nullable = false)
     var saltNumber: Int? = null,
-    
+
     @field:ManyToOne(fetch = FetchType.LAZY, optional = false)
     @field:JoinColumn(name = "profile_id", nullable = false)
     var profile: ProfileEntity? = null,
