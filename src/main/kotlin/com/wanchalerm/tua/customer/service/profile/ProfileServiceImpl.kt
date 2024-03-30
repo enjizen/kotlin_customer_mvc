@@ -95,8 +95,6 @@ class ProfileServiceImpl(
         return profileRepository.save(profileEntity)
     }
 
-
-
     internal fun checkDuplicateEmailAndMobileNumber(profileCreateRequest: ProfileCreateRequest) {
         val existsEmail = profileEmailRepository.existsByEmail(profileCreateRequest.email!!)
         if (existsEmail) {
