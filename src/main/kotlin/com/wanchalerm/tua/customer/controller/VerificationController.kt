@@ -28,7 +28,7 @@ class VerificationController(private val oauthProfileService: OauthProfileServic
 
     }
 
-    private fun authenticate(username: String?, password: String?): String? {
+    private fun authenticate(username: String?, password: String?): String {
         return when {
             username.isValidEmail() -> oauthProfileService.authenticateWithEmail(email = username!!, password = password!!)
             username.isValidMobileNumber() -> oauthProfileService.authenticateWithMobileNumber(mobileNumber = username!!, password = password!!)

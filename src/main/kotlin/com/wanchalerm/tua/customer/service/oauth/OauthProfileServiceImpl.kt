@@ -19,17 +19,17 @@ class OauthProfileServiceImpl(
 
     val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-    override fun authenticateWithEmail(email: String, password: String): String? {
+    override fun authenticateWithEmail(email: String, password: String): String {
         val profile = profileEmailService.getEmail(email).profile ?: throw NoContentException("$email not found profile")
         return authenticateProfile(profile, password)
     }
 
-    override fun authenticateWithMobileNumber(mobileNumber: String, password: String): String? {
+    override fun authenticateWithMobileNumber(mobileNumber: String, password: String): String {
         val profile = profileMobileService.getMobileNumber(mobileNumber).profile ?: throw NoContentException("$mobileNumber not found profile")
         return authenticateProfile(profile, password)
     }
 
-    private fun authenticateProfile(profile: ProfileEntity, password: String): String? {
+    private fun authenticateProfile(profile: ProfileEntity, password: String): String {
         val profilePassword = profile.profilesPasswords.firstOrNull { !it.isDeleted }
             ?: throw NoContentException("profile ${profile.code} not found password")
         val saltNumber =
@@ -39,7 +39,7 @@ class OauthProfileServiceImpl(
             throw BusinessException(code = ResponseEnum.CONFLICT.code, "Password does not match")
         } else {
             logger.info("Authentication successful for {}", profile.code)
-            return profile.code
+            return profile.code.orEmpty()
         }
     }
 }
