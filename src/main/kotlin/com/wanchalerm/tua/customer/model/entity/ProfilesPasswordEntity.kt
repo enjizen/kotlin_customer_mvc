@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 
 @Entity
 @Table(name = "profiles_password")
-class ProfilesPasswordEntity (
+class ProfilesPasswordEntity(
     @field:Id
     @field:GeneratedValue(strategy = GenerationType.IDENTITY)
     @field:Column(name = "id", nullable = false)

@@ -15,7 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp
 
 @Entity
 @Table(name = "profiles_mobile")
- class ProfilesMobileEntity(
+class ProfilesMobileEntity(
     @field:Id
     @field:GeneratedValue(strategy = GenerationType.IDENTITY)
     @field:Column(name = "id", nullable = false)

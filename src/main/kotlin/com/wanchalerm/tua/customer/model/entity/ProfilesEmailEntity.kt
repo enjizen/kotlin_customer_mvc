@@ -16,27 +16,27 @@ import java.time.LocalDateTime
 
 @Entity
 @Table(name = "profiles_email")
- class ProfilesEmailEntity(
-   @field:Id
+class ProfilesEmailEntity(
+    @field:Id
     @field:GeneratedValue(strategy = GenerationType.IDENTITY)
     @field:Column(name = "id", nullable = false)
     var id: Int? = null,
 
-   @field:Column(name = "email", nullable = false, length = 60, unique = true)
+    @field:Column(name = "email", nullable = false, length = 60, unique = true)
     var email: String? = null,
 
-   @field:Column(name = "created_timestamp", nullable = false)
+    @field:Column(name = "created_timestamp", nullable = false)
     @field:CreationTimestamp
     var createdTimestamp: LocalDateTime? = null,
 
-   @field:Column(name = "updated_timestamp", nullable = false)
+    @field:Column(name = "updated_timestamp", nullable = false)
     @field:UpdateTimestamp
     var updatedTimestamp: LocalDateTime? = null,
 
-   @field:Column(name = "is_deleted", nullable = false)
+    @field:Column(name = "is_deleted", nullable = false)
     var isDeleted: Boolean? = false,
 
-   @field:ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @field:ManyToOne(fetch = FetchType.LAZY, optional = false)
     @field:JoinColumn(name = "profile_id", nullable = false)
     var profile: ProfileEntity? = null
 )

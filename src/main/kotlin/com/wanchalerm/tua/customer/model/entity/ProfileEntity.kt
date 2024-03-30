@@ -16,7 +16,7 @@ import org.hibernate.annotations.UpdateTimestamp
 
 @Entity
 @Table(name = "profiles")
- class ProfileEntity (
+class ProfileEntity(
     @field:Id
     @field:GeneratedValue(strategy = GenerationType.IDENTITY)
     @field:Column(name = "id", nullable = false)
