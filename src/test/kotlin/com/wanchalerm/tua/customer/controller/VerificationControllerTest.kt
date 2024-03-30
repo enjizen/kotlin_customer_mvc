@@ -27,7 +27,6 @@ class VerificationControllerTest {
     @MockBean
     private lateinit var oauthProfileService: OauthProfileService
 
-
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -39,7 +38,7 @@ class VerificationControllerTest {
         val resource = resourceLoader.classLoader!!.getResourceAsStream("verify_pass.json")
         val content = JsonPath.parse(resource).jsonString()
 
-        whenever(oauthProfileService.authentication(any(), any())).thenReturn("b7be0453-c799-48cb-9ba8-61fce4c203a2")
+        whenever(oauthProfileService.authenticateWithEmail(any(), any())).thenReturn("b7be0453-c799-48cb-9ba8-61fce4c203a2")
 
         mockMvc.perform(
             MockMvcRequestBuilders.post("/v1/verify/pass").content(content)
@@ -48,7 +47,7 @@ class VerificationControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.status.code", CoreMatchers.equalTo("2000")))
             .andExpect(MockMvcResultMatchers.jsonPath("$.status.message", CoreMatchers.equalTo("Success")))
             .andExpect(MockMvcResultMatchers.jsonPath("$.data.customer_code", CoreMatchers.equalTo("b7be0453-c799-48cb-9ba8-61fce4c203a2")))
-        verify(oauthProfileService, times(1)).authentication(any(), any())
+        verify(oauthProfileService, times(1)).authenticateWithEmail(any(), any())
 
     }
 }

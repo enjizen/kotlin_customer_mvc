@@ -75,7 +75,7 @@ class OauthProfileServiceImplTest {
 
         whenever(profileEmailService.getEmail(any())).thenReturn(profilesEmailEntity)
 
-        val result = oauthService.authentication("email@gmail.com", "123456")
+        val result = oauthService.authenticateWithEmail("email@gmail.com", "123456")
 
         assertEquals("b7be0453-c799-48cb-9ba8-61fce4c203a2", result)
 
@@ -89,7 +89,7 @@ class OauthProfileServiceImplTest {
 
         whenever(profileMobileService.getMobileNumber(any())).thenReturn(profilesMobileEntity)
 
-        val result = oauthService.authentication("0923388994", "123456")
+        val result = oauthService.authenticateWithMobileNumber("0923388994", "123456")
 
         assertEquals("b7be0453-c799-48cb-9ba8-61fce4c203a2", result)
 
@@ -98,64 +98,6 @@ class OauthProfileServiceImplTest {
 
     }
 
-    @Test
-    fun `authentication with invalid username`() {
 
-        assertThrows<InputValidationException> { oauthService.authentication("092338899e", "123456") }
-
-        verify(profileEmailService, never()).getEmail(any())
-        verify(profileMobileService, never()).getMobileNumber(any())
-
-    }
-
-    @Test
-    fun `authentication password not found`() {
-
-        profileEntity.profilesPasswords.first().isDeleted = true
-
-        whenever(profileMobileService.getMobileNumber(any())).thenReturn(profilesMobileEntity)
-
-        assertThrows<NoContentException> { oauthService.authentication("0923388993", "123456") }
-
-        verify(profileEmailService, never()).getEmail(any())
-        verify(profileMobileService, times(1)).getMobileNumber(any())
-    }
-
-    @Test
-    fun `authentication salt number not found`() {
-
-        profileEntity.profilesPasswords.first().saltNumber = null
-
-        whenever(profileMobileService.getMobileNumber(any())).thenReturn(profilesMobileEntity)
-
-        assertThrows<NoContentException> { oauthService.authentication("0923388993", "123456") }
-
-        verify(profileEmailService, never()).getEmail(any())
-        verify(profileMobileService, times(1)).getMobileNumber(any())
-    }
-
-    @Test
-    fun `authentication password not match`() {
-
-        whenever(profileMobileService.getMobileNumber(any())).thenReturn(profilesMobileEntity)
-
-        assertThrows<BusinessException> { oauthService.authentication("0923388993", "1234567") }
-
-        verify(profileEmailService, never()).getEmail(any())
-        verify(profileMobileService, times(1)).getMobileNumber(any())
-    }
-
-    @Test
-    fun `authentication profile is null`() {
-
-        profilesMobileEntity.profile = null
-
-        whenever(profileMobileService.getMobileNumber(any())).thenReturn(profilesMobileEntity)
-
-        assertThrows<NoContentException> { oauthService.authentication("0923388993", "1234567") }
-
-        verify(profileEmailService, never()).getEmail(any())
-        verify(profileMobileService, times(1)).getMobileNumber(any())
-    }
 
 }

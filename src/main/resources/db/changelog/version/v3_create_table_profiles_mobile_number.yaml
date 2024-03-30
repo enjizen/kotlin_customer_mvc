@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id:  3
+      author:  wanchalerm
+      comment: mobile number link profiles
+      changes:
+        - createTable:
+            tableName:  profiles_mobile
+            columns:
+              - column:
+                  name:  id
+                  type:  INT
+                  autoIncrement:  true
+                  constraints:
+                    primaryKey:  true
+                    nullable:  false
+              - column:
+                  name:  mobile_number
+                  type:  VARCHAR(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name:  created_timestamp
+                  type:  TIMESTAMP(6)
+                  defaultValueComputed: NOW(6)
+                  constraints:
+                    nullable: false
+              - column:
+                  name:  updated_timestamp
+                  type:  TIMESTAMP(6)
+                  defaultValueComputed: NOW(6)
+                  constraints:
+                    nullable: false
+              - column:
+                  name:  is_deleted
+                  type:  TINYINT(1)
+                  defaultValueNumeric: 0
+                  constraints:
+                    nullable: false
+              - column:
+                  name:  profile_id
+                  type:  INT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_mobile_profiles
+                    references: profiles(id)
+        - addUniqueConstraint:
+            constraintName: unique_constraint_mobile
+            tableName: profiles_mobile
+            columnNames: mobile_number

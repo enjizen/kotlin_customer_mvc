@@ -1,6 +1,9 @@
 package com.wanchalerm.tua.customer.controller
 
 import com.wanchalerm.tua.common.constant.ResponseEnum
+import com.wanchalerm.tua.common.exception.InputValidationException
+import com.wanchalerm.tua.common.extension.isValidEmail
+import com.wanchalerm.tua.common.extension.isValidMobileNumber
 import com.wanchalerm.tua.common.model.response.ResponseModel
 import com.wanchalerm.tua.customer.model.request.AuthenticationRequest
 import com.wanchalerm.tua.customer.model.response.AuthenticationResponse
@@ -21,7 +24,15 @@ class VerificationController(private val oauthProfileService: OauthProfileServic
     fun authenticationWithEmail(@Valid @RequestBody authenticationRequest: AuthenticationRequest) : ResponseEntity<ResponseModel> {
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(ResponseModel(ResponseEnum.SUCCESS, dataObj = AuthenticationResponse(customerCode =  oauthProfileService.authentication(username = authenticationRequest.username!!, password = authenticationRequest.password!!))))
+            .body(ResponseModel(ResponseEnum.SUCCESS, dataObj = AuthenticationResponse(authenticate(authenticationRequest.username, authenticationRequest.password))))
+
     }
 
+    private fun authenticate(username: String?, password: String?): String? {
+        return when {
+            username.isValidEmail() -> oauthProfileService.authenticateWithEmail(email = username!!, password = password!!)
+            username.isValidMobileNumber() -> oauthProfileService.authenticateWithMobileNumber(mobileNumber = username!!, password = password!!)
+            else -> throw InputValidationException(message = "Invalid username format")
+        }
+    }
 }

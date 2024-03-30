@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 import jakarta.validation.constraints.NotBlank
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-data class AuthenticationRequest(
+class AuthenticationRequest(
     @field:NotBlank
     val username: String? = null,
     @field:NotBlank
