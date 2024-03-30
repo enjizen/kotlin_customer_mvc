@@ -3,7 +3,7 @@
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <!-- Set the logging pattern -->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %X{correlation_id} %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - [X-Correlation-Id: %X{X-Correlation-Id}] -[X-Device-Id: %X{X-Device-Id}] - %msg%n</pattern>
         </encoder>
     </appender>
 
