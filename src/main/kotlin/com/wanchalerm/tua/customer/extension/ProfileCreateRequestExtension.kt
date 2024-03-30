@@ -1,11 +1,11 @@
 package com.wanchalerm.tua.customer.extension
 
+import com.github.f4b6a3.uuid.UuidCreator
 import com.wanchalerm.tua.customer.model.entity.ProfileEntity
 import com.wanchalerm.tua.customer.model.entity.ProfilesEmailEntity
 import com.wanchalerm.tua.customer.model.entity.ProfilesMobileEntity
 import com.wanchalerm.tua.customer.model.entity.ProfilesPasswordEntity
 import com.wanchalerm.tua.customer.model.request.ProfileCreateRequest
-import java.util.*
 
 fun ProfileCreateRequest.buildProfileEntity(
     saltNumber: Int,
@@ -13,7 +13,7 @@ fun ProfileCreateRequest.buildProfileEntity(
 ): ProfileEntity {
     val profileCreateRequest = this
     return ProfileEntity().apply {
-        code = UUID.randomUUID().toString()
+        code = UuidCreator.getTimeOrderedEpoch().toString()
         firstName = profileCreateRequest.firstName
         lastName = profileCreateRequest.lastName
         birthDate = profileCreateRequest.birthDate
