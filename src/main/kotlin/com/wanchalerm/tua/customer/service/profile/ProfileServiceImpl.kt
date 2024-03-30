@@ -4,7 +4,6 @@ import com.wanchalerm.tua.common.exception.DuplicateException
 import com.wanchalerm.tua.common.exception.NoContentException
 import com.wanchalerm.tua.customer.extension.buildProfileEntity
 import com.wanchalerm.tua.customer.model.entity.ProfileEntity
-import com.wanchalerm.tua.customer.model.entity.ProfilesEmailEntity
 import com.wanchalerm.tua.customer.model.entity.ProfilesMobileEntity
 import com.wanchalerm.tua.customer.model.entity.ProfilesPasswordEntity
 import com.wanchalerm.tua.customer.model.request.ProfileCreateRequest
@@ -15,8 +14,6 @@ import com.wanchalerm.tua.customer.repository.ProfilePasswordRepository
 import com.wanchalerm.tua.customer.repository.ProfileRepository
 import com.wanchalerm.tua.customer.util.EncodePassword
 import jakarta.transaction.Transactional
-import java.security.SecureRandom
-import java.util.*
 import org.springframework.beans.BeanUtils
 import org.springframework.stereotype.Service
 
